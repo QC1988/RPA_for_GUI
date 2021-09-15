@@ -1,12 +1,31 @@
 #!/usr/bin/env python
+# -*- coding: <utf-8> -*-
 
 '''
-静态文本、可控文本、对话框、GetApp()
+QA_process_tool
 '''
+import os
 import wx,time
 import sys
+from sys import path
+pwd = os.getcwd()
+father_path=os.path.abspath(os.path.dirname(pwd)+os.path.sep+".")
+path.insert(0, father_path)
+path.insert(0, father_path+'\\Create_RMA_List')
+
+import Create_RMA_list
+import write_ini
+import configparser
+from wx.core import SYS_DEVICE_DEFAULT_FONT
 ID_EXIT=200
 ID_ABOUT=201
+
+
+class myconf(configparser.ConfigParser):
+    def __init__(self, defaults=None):
+        configparser.ConfigParser.__init__(self, defaults=None)
+    def optionxform(self, optionstr):
+        return optionstr
 
 
 class new_std(wx.TextCtrl):
@@ -14,19 +33,18 @@ class new_std(wx.TextCtrl):
         wx.TextCtrl.__init__(self, parent, id, title, pos, size, style=wx.TE_MULTILINE)
         self.old_stdout=sys.stdout
         self.old_stderr=sys.stderr
-    
+
     def write(self, output):
         output=output.replace('\n', '\r\n')
         self.WriteText(output)
-    
+
     def back_to_console(self):
         sys.stdout = self.old_stdout
         sys.stderr = self.old_stderr
 
 
-
 class Frame(wx.Frame): #2 wx.Frame子类
-    def __init__(self,parent = None,id = -1,title ='系统管理界面'):
+    def __init__(self,parent = None,id = -1,title ='QA processing tool'):
         wx.Frame.__init__(self,parent,id,title,size=(900,600))
         self.panel_Celan1 = None
         self.panel_Celan2 = None
@@ -61,48 +79,63 @@ class Frame(wx.Frame): #2 wx.Frame子类
         self.SetStatusText(st, 1)  # 这里的1代表将时间放入状态栏的第二部分上
 
 
-    # 初始化登陆
-    def InitButton(self):
-        self.panel_Celan1 = wx.Panel(self, pos=(400, 150), size=(300, 300))
-        wx.StaticText(self.panel_Celan1,label="Username",pos=(20,20))
-        wx.StaticText(self.panel_Celan1, label="Password", pos=(20, 50))
-        self._username=wx.TextCtrl(self.panel_Celan1,pos=(110,15))
-        self._passwd = wx.TextCtrl(self.panel_Celan1, pos=(110, 45),style=wx.TE_PASSWORD)
+    # # 初始化登陆
+    # def InitButton(self):
+    #     self.panel_Celan1 = wx.Panel(self, pos=(400, 150), size=(300, 300))
+    #     wx.StaticText(self.panel_Celan1,label="Username",pos=(20,20))
+    #     wx.StaticText(self.panel_Celan1, label="Password", pos=(20, 50))
+    #     self._username=wx.TextCtrl(self.panel_Celan1,pos=(110,15))
+    #     self._passwd = wx.TextCtrl(self.panel_Celan1, pos=(110, 45),style=wx.TE_PASSWORD)
 
-        self._submit_btn=wx.Button(self.panel_Celan1,label=u'提交',pos=(100,100),size=(50,30))
-        self.panel_Celan1.Bind(wx.EVT_BUTTON,self.Onclick,self._submit_btn)
+    #     self._submit_btn=wx.Button(self.panel_Celan1,label=u'提交',pos=(100,100),size=(50,30))
+    #     self.panel_Celan1.Bind(wx.EVT_BUTTON,self.Onclick,self._submit_btn)
 
 
-    #处理登陆事件
-    def Onclick(self,event):
-        global denglu_flag
-        if event.GetEventObject()==self._submit_btn:
-            user = self.GetUsername()
-            passwd = self.GetPasswd()
-            print(user+":"+passwd)
-            if(user == "wenli"and passwd == "123456"):
-                denglu_flag=True
-                self.panel_Celan1.Destroy()
-                self.panel_Celan1_1 =wx.Panel(self, pos=(400, 150), size=(300, 300))
-                wx.StaticText(self.panel_Celan1_1, label="欢迎登陆", pos=(130, 150))
-    def GetUsername(self):
-        return self._username.GetValue()
+    # #处理登陆事件
+    # def Onclick(self,event):
+    #     global denglu_flag
+    #     if event.GetEventObject()==self._submit_btn:
+    #         user = self.GetUsername()
+    #         passwd = self.GetPasswd()
+    #         print(user+":"+passwd)
+    #         if(user == "wenli"and passwd == "123456"):
+    #             denglu_flag=True
+    #             self.panel_Celan1.Destroy()
+    #             self.panel_Celan1_1 =wx.Panel(self, pos=(400, 150), size=(300, 300))
+    #             wx.StaticText(self.panel_Celan1_1, label="欢迎登陆", pos=(130, 150))
+    # def GetUsername(self):
+    #     return self._username.GetValue()
 
-    def GetPasswd(self):
-        return self._passwd.GetValue()
+    # def GetPasswd(self):
+    #     return self._passwd.GetValue()
 
     # initial RMA
     def InitButton(self):
         self.panel_Celan1 = wx.Panel(self, pos=(200, 0), size=(700, 200))
-        wx.StaticText(self.panel_Celan1,label="Username",pos=(20,20))
-        wx.StaticText(self.panel_Celan1, label="Password", pos=(20, 50))
-        self._username=wx.TextCtrl(self.panel_Celan1,pos=(110,15))
-        self._passwd = wx.TextCtrl(self.panel_Celan1, pos=(110, 45),style=wx.TE_PASSWORD)
+        wx.StaticText(self.panel_Celan1,label="RMA list name",pos=(20,20))
+        # wx.StaticText(self.panel_Celan1, label="Password", pos=(20, 50))
+        self.RMA_name=wx.TextCtrl(self.panel_Celan1,pos=(110,15))
+        # self._passwd = wx.TextCtrl(self.panel_Celan1, pos=(110, 45),style=wx.TE_PASSWORD)
 
-        self._submit_btn=wx.Button(self.panel_Celan1,label=u'提交',pos=(100,100),size=(50,30))
-        self.panel_Celan1.Bind(wx.EVT_BUTTON,self.Onclick,self._submit_btn)
+        self._submit_btn=wx.Button(self.panel_Celan1,label=u'実行',pos=(100,100),size=(50,30))
+        self.panel_Celan1.Bind(wx.EVT_BUTTON,self.OnclickRMAbutton,self._submit_btn)
 
     
+    def OnclickRMAbutton(self, event):
+        # global denglu_flag
+        if event.GetEventObject()==self._submit_btn:
+            RMA_paras['RMA_list_name'] = self.GetRMAname() + '.xlsx'
+            config_path_tmp = father_path +'\\config.ini'
+            print(config_path_tmp)
+            write_ini.main(config_path_tmp, 'paras_for_RMA',RMA_paras)
+            print(RMA_paras['RMA_list_name'])
+            Create_RMA_list.main()
+
+    
+    def GetRMAname(self):
+        # print("GetRMAname")
+        # print(self.RMA_name.GetValue())
+        return self.RMA_name.GetValue()
 
 
     #初始化侧栏
@@ -183,6 +216,12 @@ class App(wx.App): #5 wx.App子类
 
         return True
 if __name__=="__main__":
+
+    conf = myconf()
+    if os.path.exists(father_path+'\\config.ini'):
+        conf.read(father_path+'\\config.ini',encoding='utf-8')
+        RMA_paras = conf['paras_for_RMA']
+
     denglu_flag = False
     app = App()
     app.MainLoop()
