@@ -37,20 +37,56 @@ class new_std(wx.TextCtrl):
 
 class Frame(wx.Frame): #2 wx.Frame子类
     def __init__(self,parent = None,id = -1,title ='QA processing tool'):
-        wx.Frame.__init__(self,parent,id,title,size=(960,760))
-        self.panel_Celan1 = None
-        self.panel_Celan2 = None
-        self.panel_Celan3 = None
-        self.panel_Celan1_1 = None
+        wx.Frame.__init__(self,parent,id,title,pos = wx.DefaultPosition, size = wx.Size( 755,628 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL)
+        self.panel_inter1 = 0
+        self.panel_inter2 = 0
+        self.panel_inter3 = 0
+        # self.panel_inter1_1 = 0
+
+        self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
+
+        windowSizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        panelSideBarSizer = wx.BoxSizer(wx.VERTICAL)
+
+        buttonSideBarSize = wx.BoxSizer(wx.VERTICAL)
+
+        self.InitSideBar()
+        buttonSideBarSize.Add(self.button_RMA, flag=wx.EXPAND)
+        buttonSideBarSize.Add(self.button_NEP, flag=wx.EXPAND)
+        buttonSideBarSize.Add(self.button_SBF, flag=wx.EXPAND)
+        buttonSideBarSize.Add(self.button, flag=wx.EXPAND)
+
 
         self.setupStatusBar()
-        self.InitCelan()
-        self.InitButton()
+        self.InitInterPanel()
         self.InitLog()
 
-    def clickbutton(self, e):
-        print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
-        # print("%Y-%m-%d %H:%M:%S"%time.localtime(time.time()))
+        # panelSideBarSizer.Add(self._background, flag=wx.EXPAND
+
+        self.panel_siderbar.SetSizer(buttonSideBarSize)
+        self.panel_siderbar.Layout()
+        buttonSideBarSize.Fit(self.panel_siderbar)
+
+        panelSideBarSizer.Add(self.panel_siderbar,1, wx.EXPAND|wx.ALL, 5)
+
+        windowSizer.Add(panelSideBarSizer,1, wx.EXPAND, 5)
+
+
+        panelInterSizer = wx.BoxSizer(wx.VERTICAL)
+
+        panelInterSizer.Add(self.panel_inter1, 1, wx.EXPAND| wx.ALL, 5)
+        panelInterSizer.Add(self.panel, 1, wx.EXPAND| wx.ALL, 5)
+
+        windowSizer.Add(panelInterSizer, 1, wx.EXPAND, 5)
+
+        self.SetSizer(windowSizer)
+        self.Layout()
+
+        self.Centre(wx.BOTH)
+
+        # wx.StaticBitmap(self.panel_siderbar,-1,wx.BitmapFromImage( self._background)) #显示图像
+
 
     #initialize Statebar
     def setupStatusBar(self):
@@ -69,83 +105,69 @@ class Frame(wx.Frame): #2 wx.Frame子类
         st = time.strftime('%Y-%m-%d %H:%M:%S', t)
         self.SetStatusText(st, 1)  # 这里的1代表将时间放入状态栏的第二部分上
 
-    # # 初始化登陆
-    # def InitButton(self):
-    #     self.panel_Celan1 = wx.Panel(self, pos=(400, 150), size=(300, 300))
-    #     wx.StaticText(self.panel_Celan1,label="Username",pos=(20,20))
-    #     wx.StaticText(self.panel_Celan1, label="Password", pos=(20, 50))
-    #     self._username=wx.TextCtrl(self.panel_Celan1,pos=(110,15))
-    #     self._passwd = wx.TextCtrl(self.panel_Celan1, pos=(110, 45),style=wx.TE_PASSWORD)
-
-    #     self._submit_btn=wx.Button(self.panel_Celan1,label=u'提交',pos=(100,100),size=(50,30))
-    #     self.panel_Celan1.Bind(wx.EVT_BUTTON,self.Onclick,self._submit_btn)
-
-    # #处理登陆事件
-    # def Onclick(self,event):
-    #     global denglu_flag
-    #     if event.GetEventObject()==self._submit_btn:
-    #         user = self.GetUsername()
-    #         passwd = self.GetPasswd()
-    #         print(user+":"+passwd)
-    #         if(user == "wenli"and passwd == "123456"):
-    #             denglu_flag=True
-    #             self.panel_Celan1.Destroy()
-    #             self.panel_Celan1_1 =wx.Panel(self, pos=(400, 150), size=(300, 300))
-    #             wx.StaticText(self.panel_Celan1_1, label="欢迎登陆", pos=(130, 150))
-    # def GetUsername(self):
-    #     return self._username.GetValue()
-
-    # def GetPasswd(self):
-    #     return self._passwd.GetValue()
-
-    # initial RMA
-    def InitButton(self):
-        self.panel_Celan1 = wx.Panel(self, pos=(200, 0), size=(700, 200))
-        wx.StaticText(self.panel_Celan1,label="RMA list name",pos=(20,20))
-        # wx.StaticText(self.panel_Celan1, label="Password", pos=(20, 50))
-        self.RMA_name=wx.TextCtrl(self.panel_Celan1,pos=(120,15))
-        # self._passwd = wx.TextCtrl(self.panel_Celan1, pos=(110, 45),style=wx.TE_PASSWORD)
-
-        self._submit_btn=wx.Button(self.panel_Celan1,label=u'実行',pos=(100,100),size=(50,30))
-        self.panel_Celan1.Bind(wx.EVT_BUTTON,self.OnclickRMAbutton,self._submit_btn)
 
     #initialize Sidebar
-    def InitCelan(self):
-        self.panel_Celan = wx.Panel(self, pos=(0, 0), size=(200, 800))  # 创建侧栏画板 
-        CelanSizer = wx.BoxSizer(wx.VERTICAL)
-
+    def InitSideBar(self):
+        # self.panel_siderbar = wx.Panel(self, pos=(0, 0), size=(200, 800))  # 创建侧栏画板 
+        self.panel_siderbar = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)  # 创建侧栏画板 
         self._background = wx.Image("background.jpg",type = wx.BITMAP_TYPE_ANY,)
         self._background = self._background.Rescale(200,150) #改变图像大小
 
-        # CelanSizer.Add(self._background, flag=wx.EXPAND)
-        wx.StaticBitmap(self.panel_Celan,-1,wx.BitmapFromImage( self._background)) #显示图像
-        # self._caidan1 = wx.Button(self.panel_Celan, label=u'RMA', pos=(0, 150), size=(200, 30))
-        self._caidan1 = wx.Button(self.panel_Celan, label=u'RMA', pos=(0, 150), size=(200, 30))
-        self._caidan2 = wx.Button(self.panel_Celan, label=u'NEP', pos=(0, 180), size=(200, 30))
-        self._caidan3 = wx.Button(self.panel_Celan, label=u'SBF', pos=(0, 210), size=(200, 30))
-        self.button = wx.Button(self.panel_Celan, label=u"Button", pos=(0, 240), size=(200, 30))
-        
-        CelanSizer.Add(self._caidan1, flag=wx.EXPAND)
-        CelanSizer.Add(self._caidan2, flag=wx.EXPAND)
-        CelanSizer.Add(self._caidan3, flag=wx.EXPAND)
-        CelanSizer.Add(self.button, flag=wx.EXPAND)
+        # panelSideBarSizer.Add(self._background, flag=wx.EXPAND)
+ 
+        # self.button_RMA = wx.Button(self.panel_siderbar, label=u'RMA', pos=(0, 150), size=(200, 30))
+        self.button_RMA = wx.Button(self.panel_siderbar, wx.ID_ANY, u"RMA", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.button_NEP = wx.Button(self.panel_siderbar, wx.ID_ANY, u"NEP", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.button_SBF = wx.Button(self.panel_siderbar, wx.ID_ANY, u"SBF", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.button = wx.Button(self.panel_siderbar,wx.ID_ANY, u"SBF", wx.DefaultPosition, wx.DefaultSize, 0)
 
-        self.panel_Celan.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self._caidan1)
-        self.panel_Celan.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self._caidan2)
-        self.panel_Celan.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self._caidan3)
-        self.panel_Celan.Bind(wx.EVT_BUTTON, self.clickbutton, self.button)
+        self.panel_siderbar.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self.button_RMA)
+        self.panel_siderbar.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self.button_NEP)
+        self.panel_siderbar.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self.button_SBF)
+        self.panel_siderbar.Bind(wx.EVT_BUTTON, self.clickbutton, self.button)
+
+    # initial RMA
+    def InitInterPanel(self):
+        # self.panel_inter1 = wx.Panel(self, pos=(200, 0), size=(700, 200))
+        self.panel_inter1 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        wx.StaticText(self.panel_inter1,label="RMA list name",pos=(20,20))
+        # wx.StaticText(self.panel_inter1, label="Password", pos=(20, 50))
+        self.RMA_name=wx.TextCtrl(self.panel_inter1,pos=(120,15))
+        # self._passwd = wx.TextCtrl(self.panel_inter1, pos=(110, 45),style=wx.TE_PASSWORD)
+
+        self._submit_btn=wx.Button(self.panel_inter1,label=u'実行',pos=(100,100),size=(50,30))
+        self.panel_inter1.Bind(wx.EVT_BUTTON,self.OnclickRMAbutton,self._submit_btn)
+
+    def drawRMApanel(self):
+        pass
+
+
+    def drawNEPpanel(self):
+        self.panel_inter2 = wx.Panel(self, pos=(200, 0), size=(700, 200))
+        wx.StaticText(self.panel_inter2, label="NEP", pos=(130, 150))
+
+
+    def drawSBFpanel(self):
+        self.panel_inter3 = wx.Panel(self, pos=(200, 0), size=(700, 200))
+        wx.StaticText(self.panel_inter3, label="SBF", pos=(130, 150))
+
+
 
     def InitLog(self):
-        self.panel = wx.Panel(self, pos=(200, 200), size=(700, 400))
+        self.panel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
         self.label = new_std(self.panel, -1, "----末----", pos=(0, 0), size=(700, 400))
         sys.stdout = self.label
         sys.stderr = self.label
 
+    def clickbutton(self, e):
+        print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+        # print("%Y-%m-%d %H:%M:%S"%time.localtime(time.time()))
+
 	# def __del__(self):
     #     pass
 
-    def Onclick_Ce(self,event):
-        event.Skip()
+    # def Onclick_Ce(self,event):
+    #     event.Skip()
 
-    def OnclickRMAbutton(self, event):
-        event.Skip()
+    # def OnclickRMAbutton(self, event):
+    #     event.Skip()
