@@ -22,56 +22,59 @@ class myconf(configparser.ConfigParser):
         return optionstr
 
 class LogicFrame(QA_gui_template.Frame):
-    def __init__(self, parent=QA_gui_template.Frame):
-        QA_gui_template.Frame.__init__(self, parent)
 
     #处理侧栏的点击事件
     def Onclick_Ce(self,event):
         # CeSizer = wx.BoxSizer(wx.VERTICAL)
-        if event.GetEventObject() == self._caidan1:
+        if event.GetEventObject() == self.button_RMA:
             print("RMA")
             # 如果需要显示的地方存在其他面板，删除
-            if self.panel_Celan2:
-                 self.panel_Celan2.Destroy()
-            if self.panel_Celan3:
-                self.panel_Celan3.Destroy()
-            if not self.panel_Celan1 :
-                self.panel_Celan1 = wx.Panel(self, pos=(200, 0), size=(700, 200))
-                wx.StaticText(self.panel_Celan1, label="RMA list name", pos=(20, 20))
-                self.RMA_name = wx.TextCtrl(self.panel_Celan1, pos=(120,15))  
-                self.RMA_process_btn=wx.Button(self.panel_Celan1,label=u'実行',pos=(100,100),size=(50,30))
+            if self.panel_inter2:
+                #  self.panel_inter2.Destroy()
+                 self.panel_inter2.Destroy()
+            if self.panel_inter3:
+                # self.panel_inter3.Destroy()
+                self.panel_inter3.Destroy()
+            if not self.panel_inter1 :
+                self.InitInterPanel()
+                
+                # .Prepend(self.panel_inter1, wx.EXPAND| wx.ALL, 5)
+                self.Layout()
+                # self.panel_inter1 = wx.Panel(self, pos=(200, 0), size=(700, 200))
+                # wx.StaticText(self.panel_inter1, label="RMA list name", pos=(20, 20))
+                # self.RMA_name = wx.TextCtrl(self.panel_inter1, pos=(120,15))  
+                # self.RMA_process_btn=wx.Button(self.panel_inter1,label=u'実行',pos=(100,100),size=(50,30))
+                # self.panel_inter1.Bind(wx.EVT_BUTTON,self.OnclickRMAbutton,self.RMA_process_btn)
             #     if(denglu_flag == False):
             #         # self.InitButton()
             #         print("******")
             #     else:
-            #         if not self.panel_Celan1_1:
-            #             self.panel_Celan1_1 = wx.Panel(self, pos=(400, 150), size=(300, 300))
-            #             wx.StaticText(self.panel_Celan1_1, label="欢迎登陆", pos=(130, 150))
+            #         if not self.panel_inter1_1:
+            #             self.panel_inter1_1 = wx.Panel(self, pos=(400, 150), size=(300, 300))
+            #             wx.StaticText(self.panel_inter1_1, label="欢迎登陆", pos=(130, 150))
 
-        if event.GetEventObject()==self._caidan2:
+        if event.GetEventObject()==self.button_NEP:
             # 如果需要显示的地方存在其他面板，删除
             print("NEP")
-            if self.panel_Celan1:
-                self.panel_Celan1.Destroy()
-            if self.panel_Celan1_1:
-                self.panel_Celan1_1.Destroy()
-            if self.panel_Celan3:
-                self.panel_Celan3.Destroy()
-            if not self.panel_Celan2 :
-                self.panel_Celan2 = wx.Panel(self, pos=(200, 0), size=(700, 200))
-                wx.StaticText(self.panel_Celan2, label="NEP", pos=(130, 150))
+            if self.panel_inter1:
+                self.panel_inter1.Destroy()
+            # if self.panel_inter1_1:
+            #     self.panel_inter1_1.Destroy()
+            if self.panel_inter3:
+                self.panel_inter3.Destroy()
+            if not self.panel_inter2 :
+                self.drawNEPpanel()
 
-        if event.GetEventObject() == self._caidan3:
+        if event.GetEventObject() == self.button_SBF:
             print("SBF")
-            if self.panel_Celan1:
-                self.panel_Celan1.Destroy()
-            if self.panel_Celan1_1:
-                self.panel_Celan1_1.Destroy()
-            if  self.panel_Celan2 :
-                self.panel_Celan2.Destroy()
-            if not self.panel_Celan3:
-                self.panel_Celan3 = wx.Panel(self, pos=(200, 0), size=(700, 200))
-                wx.StaticText(self.panel_Celan3, label="SBF", pos=(130, 150))
+            if self.panel_inter1:
+                self.panel_inter1.Destroy()
+            # if self.panel_inter1_1:
+            #     self.panel_inter1_1.Destroy()
+            if  self.panel_inter2 :
+                self.panel_inter2.Destroy()
+            if not self.panel_inter3:
+                self.drawSBFpanel()
 
     def GetRMAname(self):
         # print("GetRMAname")
