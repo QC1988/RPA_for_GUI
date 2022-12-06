@@ -7,9 +7,11 @@ QA_process_tool
 import wx
 import QA_gui_logic
 
-# class App(wx.App): #5 wx.App子类
+
+# class App(wx.App): # wx.App subclass
 #     def __init__(self):
-#     #如果要重写__init__,必须调用wx.App的__init__,否则OnInit方法不会被调用
+#     
+#if rewrite __init__,it is necessary to call the __init__ in wx.App, otherwise the method would't be called.
 #         wx.App.__init__(self)
 #     def OnInit(self):
 #         self.frame=QA_gui_template.Frame()
