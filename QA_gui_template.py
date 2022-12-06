@@ -35,7 +35,7 @@ class new_std(wx.TextCtrl):
         sys.stdout = self.old_stdout
         sys.stderr = self.old_stderr
 
-class Frame(wx.Frame): #2 wx.Frame子类
+class Frame(wx.Frame): #2 wx.Frame subclass
     def __init__(self,parent = None,id = -1,title ='QA processing tool'):
         wx.Frame.__init__(self,parent,id,title,pos = wx.DefaultPosition, size = wx.Size( 755,628 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL)
         self.panel_inter1 = 0
@@ -46,9 +46,7 @@ class Frame(wx.Frame): #2 wx.Frame子类
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
         windowSizer = wx.BoxSizer(wx.HORIZONTAL)
-
         panelSideBarSizer = wx.BoxSizer(wx.VERTICAL)
-
         buttonSideBarSize = wx.BoxSizer(wx.VERTICAL)
 
         self.InitSideBar()
@@ -67,22 +65,16 @@ class Frame(wx.Frame): #2 wx.Frame子类
         self.panel_siderbar.SetSizer(buttonSideBarSize)
         self.panel_siderbar.Layout()
         buttonSideBarSize.Fit(self.panel_siderbar)
-
         panelSideBarSizer.Add(self.panel_siderbar,1, wx.EXPAND|wx.ALL, 5)
-
         windowSizer.Add(panelSideBarSizer,1, wx.EXPAND, 5)
 
+        self.panelInterSizer = wx.BoxSizer(wx.VERTICAL)
+        self.panelInterSizer.Add(self.panel_inter1, 1, wx.EXPAND| wx.ALL, 5)
+        self.panelInterSizer.Add(self.panel, 1, wx.EXPAND| wx.ALL, 5)
 
-        panelInterSizer = wx.BoxSizer(wx.VERTICAL)
-
-        panelInterSizer.Add(self.panel_inter1, 1, wx.EXPAND| wx.ALL, 5)
-        panelInterSizer.Add(self.panel, 1, wx.EXPAND| wx.ALL, 5)
-
-        windowSizer.Add(panelInterSizer, 1, wx.EXPAND, 5)
-
+        windowSizer.Add(self.panelInterSizer, 1, wx.EXPAND, 5)
         self.SetSizer(windowSizer)
         self.Layout()
-
         self.Centre(wx.BOTH)
 
         # wx.StaticBitmap(self.panel_siderbar,-1,wx.BitmapFromImage( self._background)) #显示图像
@@ -91,9 +83,9 @@ class Frame(wx.Frame): #2 wx.Frame子类
     #initialize Statebar
     def setupStatusBar(self):
         # Statebar
-        sb = self.CreateStatusBar(2)  # 2代表将状态栏分为两个
-        self.SetStatusWidths([-1, -2])  # 比例为1：2
-        self.SetStatusText("Ready", 0)  # 0代表第一个栏，Ready为内容
+        sb = self.CreateStatusBar(2)  # 2 means that divide status bar into 2
+        self.SetStatusWidths([-1, -2])  # the ratio is 1 : 2
+        self.SetStatusText("Ready", 0)  # 0 means the 1st part, the content is "Ready" 
         # timmer
         self.timer = wx.PyTimer(self.Notify)
         self.timer.Start(1000, wx.TIMER_CONTINUOUS)
@@ -103,13 +95,13 @@ class Frame(wx.Frame): #2 wx.Frame子类
     def Notify(self):
         t = time.localtime(time.time())
         st = time.strftime('%Y-%m-%d %H:%M:%S', t)
-        self.SetStatusText(st, 1)  # 这里的1代表将时间放入状态栏的第二部分上
+        self.SetStatusText(st, 1)  # 1 here means put time into the 2nd part on status bar
 
 
     #initialize Sidebar
     def InitSideBar(self):
-        # self.panel_siderbar = wx.Panel(self, pos=(0, 0), size=(200, 800))  # 创建侧栏画板 
-        self.panel_siderbar = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)  # 创建侧栏画板 
+        # self.panel_siderbar = wx.Panel(self, pos=(0, 0), size=(200, 800))  # create sidebar panel 
+        self.panel_siderbar = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL) # create sidebar panel 
         self._background = wx.Image("background.jpg",type = wx.BITMAP_TYPE_ANY,)
         self._background = self._background.Rescale(200,150) #改变图像大小
 
@@ -121,7 +113,9 @@ class Frame(wx.Frame): #2 wx.Frame子类
         self.button_SBF = wx.Button(self.panel_siderbar, wx.ID_ANY, u"SBF", wx.DefaultPosition, wx.DefaultSize, 0)
         self.button = wx.Button(self.panel_siderbar,wx.ID_ANY, u"SBF", wx.DefaultPosition, wx.DefaultSize, 0)
 
+        #  bind event，button_RMA→self.onclick_Ce
         self.panel_siderbar.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self.button_RMA)
+
         self.panel_siderbar.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self.button_NEP)
         self.panel_siderbar.Bind(wx.EVT_BUTTON, self.Onclick_Ce, self.button_SBF)
         self.panel_siderbar.Bind(wx.EVT_BUTTON, self.clickbutton, self.button)
@@ -139,18 +133,81 @@ class Frame(wx.Frame): #2 wx.Frame子类
         self.panel_inter1.Bind(wx.EVT_BUTTON,self.OnclickRMAbutton,self._submit_btn)
 
     def drawRMApanel(self):
-        pass
 
+        # self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
+        # windowSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # panelSideBarSizer = wx.BoxSizer(wx.VERTICAL)
+        # buttonSideBarSize = wx.BoxSizer(wx.VERTICAL)
+        
+        # print("************")
+        # self.panel_siderbar.SetSizer(buttonSideBarSize)
+        # self.panel_siderbar.Layout()
+        # buttonSideBarSize.Fit(self.panel_siderbar)
+        # # panelSideBarSizer.Add(self.panel_siderbar,1, wx.EXPAND|wx.ALL, 5)
+        # windowSizer.Add(panelSideBarSizer,1, wx.EXPAND, 5)
+
+        # panelInterSizer = wx.BoxSizer(wx.VERTICAL)
+        # panelInterSizer.Add(self.panel_inter1, 1, wx.EXPAND| wx.ALL, 5)
+        # panelInterSizer.Add(self.panel, 1, wx.EXPAND| wx.ALL, 5)
+
+        # self.InitSideBar()
+        # buttonSideBarSize.Add(self.button_RMA, flag=wx.EXPAND)
+        # buttonSideBarSize.Add(self.button_NEP, flag=wx.EXPAND)
+        # buttonSideBarSize.Add(self.button_SBF, flag=wx.EXPAND)
+        # buttonSideBarSize.Add(self.button, flag=wx.EXPAND)
+
+        # self.setupStatusBar()
+        # # self.InitInterPanel()
+
+        # # self.panel_inter1 = wx.Panel(self, pos=(200, 0), size=(700, 200))
+        # self.panel_inter1 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        # wx.StaticText(self.panel_inter1,label="RMA list name",pos=(20,20))
+        # # wx.StaticText(self.panel_inter1, label="Password", pos=(20, 50))
+        # self.RMA_name=wx.TextCtrl(self.panel_inter1,pos=(120,15))
+        # # self._passwd = wx.TextCtrl(self.panel_inter1, pos=(110, 45),style=wx.TE_PASSWORD)
+        # self._submit_btn=wx.Button(self.panel_inter1,label=u'実行',pos=(100,100),size=(50,30))
+        # self.panel_inter1.Bind(wx.EVT_BUTTON,self.OnclickRMAbutton,self._submit_btn)
+
+        # self.InitLog()
+
+        # windowSizer.Add(panelInterSizer, 1, wx.EXPAND, 5)
+        # self.SetSizer(windowSizer)
+        # self.Layout()
+        # self.Centre(wx.BOTH)
+        self.panel_inter1 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        # self.panelInterSizer.Add(self.panel_inter1, 1, wx.EXPAND| wx.ALL, 5)
+        self.panelInterSizer.Prepend(self.panel_inter1, 1, wx.EXPAND| wx.ALL, 5)
+        wx.StaticText(self.panel_inter1,label="RMA list name",pos=(20,20))
+        # wx.StaticText(self.panel_inter1, label="Password", pos=(20, 50))
+        self.RMA_name=wx.TextCtrl(self.panel_inter1,pos=(120,15))
+        # self._passwd = wx.TextCtrl(self.panel_inter1, pos=(110, 45),style=wx.TE_PASSWORD)
+
+        self._submit_btn=wx.Button(self.panel_inter1,label=u'実行',pos=(100,100),size=(50,30))
+        self.panel_inter1.Bind(wx.EVT_BUTTON,self.OnclickRMAbutton,self._submit_btn)
+        # self.SetSizer(self.panelInterSizer)
+
+        self.panel_inter1.Layout()
+
+        
 
     def drawNEPpanel(self):
-        self.panel_inter2 = wx.Panel(self, pos=(200, 0), size=(700, 200))
-        wx.StaticText(self.panel_inter2, label="NEP", pos=(130, 150))
+        # self.panel_inter1 = wx.Panel(self, pos=(200, 0), size=(700, 200))
+        self.panel_inter2 = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        wx.StaticText(self.panel_inter2,label="NEP  list",pos=(20,20))
+        # wx.StaticText(self.panel_inter2, label="Password", pos=(20, 50))
+        self.RMA_name=wx.TextCtrl(self.panel_inter2,pos=(120,15))
+        # self._passwd = wx.TextCtrl(self.panel_inter2, pos=(110, 45),style=wx.TE_PASSWORD)
+
+        self._submit_btn=wx.Button(self.panel_inter2,label=u'実行',pos=(100,100),size=(50,30))
+        self.panel_inter2.Bind(wx.EVT_BUTTON,self.OnclickRMAbutton,self._submit_btn)
+                
+        # self.panel_inter2 = wx.Panel(self, pos=(200, 0), size=(700, 200))
+        # wx.StaticText(self.panel_inter2, label="NEP", pos=(130, 150))
 
 
     def drawSBFpanel(self):
         self.panel_inter3 = wx.Panel(self, pos=(200, 0), size=(700, 200))
         wx.StaticText(self.panel_inter3, label="SBF", pos=(130, 150))
-
 
 
     def InitLog(self):
